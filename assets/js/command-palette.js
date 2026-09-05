@@ -106,6 +106,10 @@
     if (e.target === palette) close();
   });
 
+  document.querySelectorAll(".nav-kbd").forEach((btn) => {
+    btn.addEventListener("click", open);
+  });
+
   /* ---------------- Hidden Konami-code easter egg ---------------- */
   const KONAMI = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
   let buffer = [];

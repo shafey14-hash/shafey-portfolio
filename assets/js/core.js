@@ -214,6 +214,62 @@
     });
   }
 
+  /* ---------------- Mobile Nav Drawer ---------------- */
+  function initMobileNav() {
+    const toggleBtn = document.getElementById("mobile-menu-toggle");
+    const overlay = document.getElementById("mobile-nav-overlay");
+    const cmdTrigger = document.getElementById("mobile-cmd-trigger");
+    if (!toggleBtn || !overlay) return;
+
+    function closeNav() {
+      toggleBtn.classList.remove("active");
+      overlay.classList.remove("open");
+      document.body.style.overflow = "";
+    }
+
+    function openNav() {
+      toggleBtn.classList.add("active");
+      overlay.classList.add("open");
+      document.body.style.overflow = "hidden";
+    }
+
+    toggleBtn.addEventListener("click", () => {
+      if (overlay.classList.contains("open")) {
+        closeNav();
+      } else {
+        openNav();
+      }
+    });
+
+    overlay.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        closeNav();
+      });
+    });
+
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closeNav();
+    });
+
+    if (cmdTrigger) {
+      cmdTrigger.addEventListener("click", () => {
+        closeNav();
+        const cmdk = document.querySelector(".cmdk");
+        if (cmdk) {
+          cmdk.classList.add("open");
+          const input = cmdk.querySelector(".cmdk-input");
+          if (input) input.focus();
+        }
+      });
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("open")) {
+        closeNav();
+      }
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     runLoader();
     initCursor();
@@ -222,5 +278,6 @@
     initReveal();
     initSplitText();
     initAnchorNav();
+    initMobileNav();
   });
 })();

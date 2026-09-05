@@ -97,8 +97,34 @@
         <a href="#projects">Projects</a>
         <a href="#contact">Contact</a>
       </nav>
-      <div class="nav-kbd">Search <kbd>&#8984;</kbd><kbd>K</kbd></div>
+      <div class="nav-right">
+        <div class="nav-kbd">Search <kbd>&#8984;</kbd><kbd>K</kbd></div>
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
     </header>
+
+    <!-- ============ MOBILE NAV DRAWER ============ -->
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay">
+      <div class="mobile-nav-box">
+        <nav class="mobile-nav-links">
+          <a href="#about">About</a>
+          <a href="#skills">Skills</a>
+          <a href="#journey">Journey</a>
+          <a href="#projects">Projects</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <div class="mobile-nav-actions">
+          <div class="mobile-nav-kbd" id="mobile-cmd-trigger">
+            <span>Search Portfolio</span>
+            <kbd>&#8984;K</kbd>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- ============ HERO ============ -->
     <section class="hero">
