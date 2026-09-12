@@ -1,160 +1,210 @@
 /* ============================================================
-   scroll-controller.js — owns the GSAP ScrollTrigger pin for the
-   horizontal experience. 
-   
-   It creates a step-by-step GSAP Timeline that interleaves:
-     1. Horizontal track sliding to center a panel
-     2. Vertical text scrolling inside that panel (if it overflows)
-   
-   It broadcasts a `horizontal:progress` event with the current
-   "horizontal index" so that model-scene.js can smoothly rotate
-   the 3D object only during the horizontal phases, and pause
-   during the vertical reading phases.
+   scroll-controller.js — owns the actual scroll-input decision
+   making for the horizontal experience:
+
+     - While a panel's text content is taller than the screen,
+       incoming scroll (wheel OR touch swipe) scrolls that panel's
+       text vertically first.
+     - Only once that panel's content has been fully read (top or
+       bottom reached, depending on direction) does scroll switch
+       to moving horizontally to the next/previous panel.
+     - No native scrollbar is ever shown — panel text is scrolled
+       purely via JS (see .panel-copy's `overflow-y:hidden` in
+       style.css), driven entirely by mouse wheel / trackpad /
+       touch, exactly like scroll-controller.js's whole job title
+       says: convert scroll input into the right reaction.
+
+   This file does NOT move anything on screen itself — it only
+   decides what SHOULD happen and asks for it via events:
+     - `horizontal:panelchange` → assets/js/horizontal-scroll.js
+       actually performs the horizontal slide + resets the
+       incoming panel's scroll position.
+     - `horizontal:progress`    → assets/js/model-scene.js reacts
+       by easing the 3D model toward that panel's rotation angle.
+   horizontal-scroll.js reports back with `horizontal:transitionend`
+   once its slide animation finishes, which is what unlocks input
+   for the next panel change (prevents skipping multiple panels
+   from one fast scroll gesture).
 ============================================================ */
 (function () {
   "use strict";
-  if (!window.gsap || !window.ScrollTrigger) return;
-  gsap.registerPlugin(ScrollTrigger);
+  if (!window.gsap) return;
 
   const reduceMotion = window.SITE && window.SITE.reduceMotion;
   const pinWrap = document.querySelector(".horizontal-pin");
-  const track = document.querySelector(".horizontal-track");
-  const panels = gsap.utils.toArray(".h-panel");
+  const panels = Array.from(document.querySelectorAll(".h-panel"));
+  if (!pinWrap || !panels.length) return;
 
-  if (!pinWrap || !track || !panels.length) return;
-
+  const copies = panels.map((p) => p.querySelector(".panel-copy"));
   const panelCount = panels.length;
 
   /* ---------------- Reduced-motion fallback ----------------
-     Skip the pin/scrub entirely — stack panels vertically and let
-     native scroll + the site's normal reveal system handle it. */
+     No scroll-jacking at all — panels stack vertically (CSS:
+     `.reduced-horizontal` in style.css) and the browser's normal
+     scroll handles everything, including reading long text. */
   if (reduceMotion) {
     document.body.classList.add("reduced-horizontal");
     return;
   }
 
-  let st;
-  let tl;
-  const progressObj = { continuous: 0 };
+  let activeIndex = 0;
+  let transitioning = false; // true while a panel-to-panel slide is animating
+  let locked = false; // true while this section fills the viewport and is capturing scroll
 
-  function buildTimeline() {
-    if (st) st.kill();
-    if (tl) tl.kill();
-    gsap.killTweensOf(track);
-    gsap.killTweensOf(progressObj);
-    panels.forEach((p) => gsap.killTweensOf(p.querySelector(".panel-copy")));
-
-    gsap.set(track, { clearProps: "all" });
-    panels.forEach((p) => gsap.set(p.querySelector(".panel-copy"), { clearProps: "all" }));
-    progressObj.continuous = 0;
-
-    let totalScroll = 0;
-    
-    // Calculate total scroll distance needed
-    panels.forEach((panel, i) => {
-      // Add distance for horizontal slide (except the very first panel which is already centered)
-      if (i > 0) {
-        totalScroll += 1800; // Slower, smoother horizontal scroll
-      }
-      
-      const copy = panel.querySelector(".panel-copy");
-      // Calculate how much the text overflows the visible reading area
-      const overflow = Math.max(0, copy.scrollHeight - window.innerHeight * 0.7);
-      if (overflow > 0) {
-          totalScroll += overflow + 600; // Vertical text scrolling distance + some padding
-      } else {
-          totalScroll += 300; // Small pause even if no overflow for pacing
-      }
-    });
-
-    tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: pinWrap,
-        start: "top top",
-        end: () => `+=${totalScroll}`,
-        pin: true,
-        pinSpacing: true,
-        scrub: 1.2, // very smooth/inertial feel
-        invalidateOnRefresh: true,
-      },
-    });
-
-    panels.forEach((panel, i) => {
-      // 1. Horizontal Move to this panel
-      if (i > 0) {
-        const hDur = 1800;
-        tl.to(track, {
-          x: () => -i * window.innerWidth,
-          duration: hDur,
-          ease: "power2.inOut",
-        }, `panel_${i}`);
-
-        // Simultaneously animate the continuous value to broadcast for the 3D model
-        tl.to(progressObj, {
-          continuous: i,
-          duration: hDur,
-          ease: "power2.inOut",
-          onUpdate: () => {
-            window.dispatchEvent(
-              new CustomEvent("horizontal:progress", {
-                detail: {
-                  continuous: progressObj.continuous,
-                  activeIndex: Math.round(progressObj.continuous),
-                  panelCount: panelCount
-                },
-              })
-            );
-          },
-        }, `panel_${i}`);
-      }
-
-      // 2. Vertical Text Scroll within this panel
-      const copy = panel.querySelector(".panel-copy");
-      const overflow = Math.max(0, copy.scrollHeight - window.innerHeight * 0.7);
-      
-      const vDur = overflow > 0 ? overflow + 600 : 300;
-      
-      if (overflow > 0) {
-        tl.to(copy, {
-          y: () => -overflow,
-          duration: vDur,
-          ease: "none", // linear scroll for natural reading
-        }, `text_${i}`);
-      } else {
-        // just a dummy tween to add time/pause
-        tl.to({}, { duration: vDur }, `text_${i}`);
-      }
-    });
-
-    st = tl.scrollTrigger;
+  function dispatchProgress() {
+    const progress = panelCount > 1 ? activeIndex / (panelCount - 1) : 0;
+    window.dispatchEvent(
+      new CustomEvent("horizontal:progress", {
+        detail: { progress, continuous: activeIndex, activeIndex, panelCount },
+      }),
+    );
   }
 
-  // Build initially after fonts/layout settle
-  setTimeout(buildTimeline, 50);
+  function requestPanel(newIndex, direction) {
+    transitioning = true;
+    activeIndex = newIndex;
+    window.dispatchEvent(
+      new CustomEvent("horizontal:panelchange", {
+        detail: { index: newIndex, direction, panelCount },
+      }),
+    );
+    dispatchProgress();
+  }
 
-  // Rebuild on resize to recalculate scroll heights
-  let resizeTimer;
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(buildTimeline, 200);
+  window.addEventListener("horizontal:transitionend", () => {
+    transitioning = false;
   });
 
-  /* ---------------- Jump-to-panel (used by nav + command palette) ---------------- */
+  // ---------------- TUNE HERE: how "used up" a panel's scroll
+  // must be before we hand off to the next one (pixels) ----------------
+  const SCROLL_EPSILON = 2;
+
+  function shouldCapture(dir) {
+    const copy = copies[activeIndex];
+    if (!copy) return dir > 0 ? activeIndex < panelCount - 1 : activeIndex > 0;
+    if (dir > 0) {
+      const roomBelow = copy.scrollHeight - copy.clientHeight - copy.scrollTop;
+      return roomBelow > SCROLL_EPSILON || activeIndex < panelCount - 1;
+    }
+    return copy.scrollTop > SCROLL_EPSILON || activeIndex > 0;
+  }
+
+  function handleDelta(dir, magnitude) {
+    const copy = copies[activeIndex];
+    if (copy) {
+      const roomBelow = copy.scrollHeight - copy.clientHeight - copy.scrollTop;
+      if (dir > 0 && roomBelow > SCROLL_EPSILON) {
+        copy.scrollTop += magnitude;
+        return;
+      }
+      if (dir < 0 && copy.scrollTop > SCROLL_EPSILON) {
+        copy.scrollTop += magnitude; // magnitude is negative when scrolling up
+        return;
+      }
+    }
+    // this panel's text is fully read in this direction — move to the next/previous panel
+    if (dir > 0 && activeIndex < panelCount - 1)
+      requestPanel(activeIndex + 1, "forward");
+    else if (dir < 0 && activeIndex > 0)
+      requestPanel(activeIndex - 1, "backward");
+  }
+
+  /* ---------------- Lock state: only capture scroll while this
+     section actually fills the viewport ---------------- */
+  function setLocked(value) {
+    if (value === locked) return;
+    locked = value;
+    if (value) {
+      // snap the section into exact alignment so it doesn't freeze
+      // wherever the 65%-visible threshold happened to catch it
+      if (window.__lenis)
+        window.__lenis.scrollTo(pinWrap, { offset: 0, duration: 0.5 });
+      else pinWrap.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  const io = new IntersectionObserver(
+    (entries) =>
+      entries.forEach((entry) => setLocked(entry.intersectionRatio > 0.65)),
+    { threshold: [0, 0.65, 1] },
+  );
+  io.observe(pinWrap);
+
+  /* ---------------- Mouse wheel / trackpad ----------------
+     Registered on the CAPTURE phase so it runs BEFORE Lenis's own
+     wheel listener (Lenis listens on `window` in the bubble phase —
+     verified against its source). When we consume an event we also
+     stopPropagation() so Lenis never sees it and can't smooth-scroll
+     the page underneath us. When we DON'T consume it (exiting the
+     section, or not locked at all), we do nothing and the event
+     continues on to Lenis exactly as if we weren't here. This is
+     safer than lenis.stop()/start(): Lenis calls preventDefault()
+     on every wheel event while stopped, which would have silently
+     swallowed the "let the page scroll normally" case below. */
+  window.addEventListener(
+    "wheel",
+    (e) => {
+      if (!locked) return;
+      if (transitioning) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      const dir = e.deltaY > 0 ? 1 : -1;
+      if (!shouldCapture(dir)) return; // let it fall through to Lenis → page scrolls into Hero/Footer
+      e.preventDefault();
+      e.stopPropagation();
+      handleDelta(dir, e.deltaY);
+    },
+    { capture: true, passive: false },
+  );
+
+  /* ---------------- Touch swipe (mobile/tablet) ---------------- */
+  let touchLastY = 0;
+  window.addEventListener(
+    "touchstart",
+    (e) => (touchLastY = e.touches[0].clientY),
+    { capture: true, passive: true },
+  );
+  window.addEventListener(
+    "touchmove",
+    (e) => {
+      if (!locked) return;
+      const y = e.touches[0].clientY;
+      const deltaY = touchLastY - y; // swiping up (content moves up) == scrolling forward
+      touchLastY = y;
+      if (transitioning) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      if (deltaY === 0) return;
+      const dir = deltaY > 0 ? 1 : -1;
+      if (!shouldCapture(dir)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      handleDelta(dir, deltaY * 1.8); // touch deltas are small per-event; scale up to feel natural
+    },
+    { capture: true, passive: false },
+  );
+
+  /* ---------------- Jump-to-panel (nav + command palette) ---------------- */
   window.__scrollToPanel = function (idOrIndex) {
     let index = -1;
-    if (typeof idOrIndex === "number") {
-      index = idOrIndex;
-    } else {
-      index = panels.findIndex((p) => p.id === idOrIndex || p.dataset.panel === idOrIndex);
-    }
+    if (typeof idOrIndex === "number") index = idOrIndex;
+    else
+      index = panels.findIndex(
+        (p) => p.id === idOrIndex || p.dataset.panel === idOrIndex,
+      );
     if (index < 0 || index >= panelCount) return;
 
-    // We want to jump to `text_${index}` so the user lands on the panel text ready to read.
-    const labelTime = tl.labels[`text_${index}`] !== undefined ? tl.labels[`text_${index}`] : 0;
-    const progress = labelTime / tl.totalDuration();
-    const targetY = st.start + progress * (st.end - st.start);
+    if (window.__lenis) window.__lenis.scrollTo(pinWrap, { immediate: false });
+    else pinWrap.scrollIntoView({ behavior: "smooth", block: "start" });
 
-    if (window.__lenis) window.__lenis.scrollTo(targetY);
-    else window.scrollTo({ top: targetY, behavior: "smooth" });
+    setTimeout(() => {
+      requestPanel(index, index > activeIndex ? "forward" : "backward");
+    }, 500); // let the section finish scrolling into view before jumping panels
   };
+
+  panels[0].classList.add("is-active");
 })();

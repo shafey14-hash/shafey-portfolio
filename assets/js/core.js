@@ -6,31 +6,19 @@
 (function () {
   "use strict";
 
-  const reduceMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   window.SITE = { reduceMotion };
 
   /* ---------------- Lenis smooth scroll ---------------- */
   let lenis = null;
   if (!reduceMotion && window.Lenis) {
-    lenis = new Lenis({
-      duration: 1.15,
-      smoothWheel: true,
-      easing: (t) => 1 - Math.pow(1 - t, 3),
-    });
+    lenis = new Lenis({ duration: 1.15, smoothWheel: true, easing: (t) => 1 - Math.pow(1 - t, 3) });
     function raf(time) {
       lenis.raf(time);
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
     window.__lenis = lenis;
-
-    if (window.gsap && window.ScrollTrigger) {
-      lenis.on("scroll", ScrollTrigger.update);
-      gsap.ticker.add((time) => lenis.raf(time * 1000));
-      gsap.ticker.lagSmoothing(0);
-    }
   }
 
   /* ---------------- Anchor nav via Lenis (or panel jump) ---------------- */
@@ -47,11 +35,7 @@
         // top. Special-case it to scroll to an explicit pixel position.
         if (id === "#top") {
           if (lenis) lenis.scrollTo(0);
-          else
-            window.scrollTo({
-              top: 0,
-              behavior: reduceMotion ? "auto" : "smooth",
-            });
+          else window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
           return;
         }
 
@@ -60,17 +44,13 @@
 
         // sections inside the horizontal-scroll experience need special
         // handling — see assets/js/scroll-controller.js for __scrollToPanel
-        if (
-          target.classList.contains("h-panel") &&
-          typeof window.__scrollToPanel === "function"
-        ) {
+        if (target.classList.contains("h-panel") && typeof window.__scrollToPanel === "function") {
           window.__scrollToPanel(target.id);
           return;
         }
 
         if (lenis) lenis.scrollTo(target, { offset: -20 });
-        else
-          target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+        else target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
       });
     });
   }
@@ -97,9 +77,7 @@
     // closing on link click is handled by initAnchorNav's own click
     // listener already firing (preventDefault + scroll), we just also
     // need to visually close the overlay menu here
-    links
-      .querySelectorAll("a")
-      .forEach((a) => a.addEventListener("click", closeMenu));
+    links.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeMenu));
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeMenu();
     });
@@ -143,17 +121,13 @@
     const label = document.querySelector(".cursor-label");
     if (!dot || !ring) return;
 
-    let mx = 0,
-      my = 0,
-      rx = 0,
-      ry = 0;
+    let mx = 0, my = 0, rx = 0, ry = 0;
 
     window.addEventListener("mousemove", (e) => {
       mx = e.clientX;
       my = e.clientY;
       dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
-      if (label)
-        label.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
+      if (label) label.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
     });
 
     (function loop() {
@@ -194,10 +168,7 @@
         const y = e.clientY - r.top - r.height / 2;
         el.style.transform = `translate(${x * 0.3}px, ${y * 0.4}px)`;
       });
-      el.addEventListener(
-        "mouseleave",
-        () => (el.style.transform = "translate(0,0)"),
-      );
+      el.addEventListener("mouseleave", () => (el.style.transform = "translate(0,0)"));
     });
   }
 
@@ -233,7 +204,7 @@
           }
         });
       },
-      { threshold: 0.15 },
+      { threshold: 0.15 }
     );
     items.forEach((el) => io.observe(el));
   }
@@ -250,8 +221,7 @@
         const wrap = document.createElement("span");
         wrap.className = "split-word";
         const inner = document.createElement("span");
-        inner.textContent =
-          part + (mode === "word" && i < parts.length - 1 ? "\u00A0" : "");
+        inner.textContent = part + (mode === "word" && i < parts.length - 1 ? "\u00A0" : "");
         inner.style.transitionDelay = `${i * 28}ms`;
         wrap.appendChild(inner);
         wrap.setAttribute("aria-hidden", "true");
@@ -259,23 +229,19 @@
       });
 
       if (reduceMotion) {
-        el.querySelectorAll(".split-word").forEach((w) =>
-          w.classList.add("in"),
-        );
+        el.querySelectorAll(".split-word").forEach((w) => w.classList.add("in"));
         return;
       }
       const io = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              entry.target
-                .querySelectorAll(".split-word")
-                .forEach((w) => w.classList.add("in"));
+              entry.target.querySelectorAll(".split-word").forEach((w) => w.classList.add("in"));
               io.unobserve(entry.target);
             }
           });
         },
-        { threshold: 0.3 },
+        { threshold: 0.3 }
       );
       io.observe(el);
     });
