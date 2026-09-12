@@ -1,23 +1,44 @@
 /* ============================================================
    horizontal-scroll.js — listens for the `horizontal:progress`
-   event from scroll-controller.js and does one thing:
-     1. Toggles `.is-active` on whichever .h-panel is currently
+   event from scroll-controller.js and does two things:
+     1. Moves .horizontal-track sideways (the actual "horizontal
+        scrolling" — no native horizontal scrollbar involved).
+     2. Toggles `.is-active` on whichever .h-panel is currently
         centered, which drives the CSS stagger-reveal for that
         panel's `.reveal-item` children and (re)triggers the
         skill-bar fill animation (see assets/js/skills.js).
-   (Horizontal track movement is now handled directly by the GSAP
-   Timeline in scroll-controller.js to support interleaved vertical text scrolling).
 ============================================================ */
 (function () {
   "use strict";
 
+  const track = document.querySelector(".horizontal-track");
   const panels = Array.from(document.querySelectorAll(".h-panel"));
-  if (!panels.length) return;
+  if (!track || !panels.length) return;
+
+  function getMaxTranslate() {
+    return Math.max(0, track.scrollWidth - window.innerWidth);
+  }
+
+  let maxTranslate = getMaxTranslate();
+  let lastProgress = 0;
+
+  function applyTransform() {
+    const x = -lastProgress * maxTranslate;
+    if (window.gsap) gsap.set(track, { x });
+    else track.style.transform = `translate3d(${x}px,0,0)`;
+  }
+
+  window.addEventListener("resize", () => {
+    maxTranslate = getMaxTranslate();
+    applyTransform(); // re-align immediately (e.g. on tablet rotation), don't wait for next scroll
+  });
 
   let lastActiveIndex = -1;
 
   window.addEventListener("horizontal:progress", (e) => {
-    const { activeIndex } = e.detail;
+    const { progress, activeIndex } = e.detail;
+    lastProgress = progress;
+    applyTransform();
 
     // panel activation (drives .reveal-item stagger + skill bars)
     if (activeIndex !== lastActiveIndex) {

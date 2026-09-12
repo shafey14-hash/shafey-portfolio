@@ -1,169 +1,117 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      Shafeyy — Ch Shafey Ali | AI Engineer &amp; Full Stack Developer
-    </title>
-    <meta
-      name="description"
-      content="Portfolio of Ch Shafey Ali (Shafeyy) — AI Engineer and Full Stack Developer crafting intelligent systems where code meets cinematic design."
-    />
-    <meta name="author" content="Ch Shafey Ali" />
-    <link rel="canonical" href="https://shafeyy.dev/" />
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shafeyy — Ch Shafey Ali | AI Engineer &amp; Full Stack Developer</title>
+<meta name="description" content="Portfolio of Ch Shafey Ali (Shafeyy) — AI Engineer and Full Stack Developer crafting intelligent systems where code meets cinematic design.">
+<meta name="author" content="Ch Shafey Ali">
+<link rel="canonical" href="https://shafeyy.dev/">
 
-    <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta
-      property="og:title"
-      content="Shafeyy — Ch Shafey Ali | AI Engineer & Full Stack Developer"
-    />
-    <meta
-      property="og:description"
-      content="Crafting intelligent systems where code meets cinematic design."
-    />
-    <meta property="og:url" content="https://shafeyy.dev/" />
-    <meta property="og:site_name" content="Shafeyy" />
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Shafeyy — Ch Shafey Ali | AI Engineer & Full Stack Developer">
+<meta property="og:description" content="Crafting intelligent systems where code meets cinematic design.">
+<meta property="og:url" content="https://shafeyy.dev/">
+<meta property="og:site_name" content="Shafeyy">
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Shafeyy — Ch Shafey Ali" />
-    <meta
-      name="twitter:description"
-      content="Crafting intelligent systems where code meets cinematic design."
-    />
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Shafeyy — Ch Shafey Ali">
+<meta name="twitter:description" content="Crafting intelligent systems where code meets cinematic design.">
 
-    <!-- Structured data -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Ch Shafey Ali",
-        "alternateName": "Shafeyy",
-        "jobTitle": "AI Engineer & Full Stack Developer",
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Gujrat",
-          "addressRegion": "Punjab",
-          "addressCountry": "Pakistan"
-        },
-        "email": "shafey8124@gmail.com"
-      }
-    </script>
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ch Shafey Ali",
+  "alternateName": "Shafeyy",
+  "jobTitle": "AI Engineer & Full Stack Developer",
+  "address": { "@type": "PostalAddress", "addressLocality": "Gujrat", "addressRegion": "Punjab", "addressCountry": "Pakistan" },
+  "email": "shafey8124@gmail.com"
+}
+</script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="assets/css/style.css?v=2" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
 
-    <!-- importmap must come before any <script type="module"> that imports "three" -->
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-        }
-      }
-    </script>
-  </head>
+<!-- importmap must come before any <script type="module"> that imports "three" -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
 
-  <body>
-    <div class="ambient-glow"></div>
-    <div class="cursor-dot"></div>
-    <div class="cursor-ring"></div>
-    <div class="cursor-label"></div>
+<div class="ambient-glow"></div>
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+<div class="cursor-label"></div>
 
-    <!-- ============ LOADER ============ -->
-    <div class="loader">
-      <canvas id="loader-shader"></canvas>
-      <div class="loader-mark">S</div>
-      <p class="loader-pct">Loading <span>0%</span></p>
-      <p class="loader-label">preparing experience</p>
+<!-- ============ LOADER ============ -->
+<div class="loader">
+  <canvas id="loader-shader"></canvas>
+  <div class="loader-mark">S</div>
+  <p class="loader-pct">Loading <span>0%</span></p>
+  <p class="loader-label">preparing experience</p>
+</div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="top">
+  <a href="#top" class="nav-logo">Shafeyy<span style="color:var(--cyan)">.</span></a>
+  <nav class="nav-links" id="navLinks">
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#journey">Journey</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="nav-kbd" id="navSearchTrigger" data-cursor-hover>Search <kbd>&#8984;</kbd><kbd>K</kbd></div>
+  <button class="nav-burger" id="navBurger" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span>
+  </button>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <canvas id="hero-canvas"></canvas>
+
+  <p class="hero-eyebrow mono">Ch Shafey Ali</p>
+  <h1 class="hero-title" data-split="char">Shafeyy</h1>
+
+  <div class="hero-role-wrap">
+    <p class="hero-role">I'm an <span class="accent" id="hero-role-text"></span><span class="accent">_</span></p>
+  </div>
+
+  <p class="hero-desc">
+    Crafting intelligent systems where code meets cinematic design — BSCS (AI)
+    student building full-stack products and machine learning tools with
+    obsessive attention to detail.
+  </p>
+
+  <div class="hero-actions">
+    <div class="magnetic" data-cursor-hover>
+      <a href="#projects" class="btn btn-primary">View Work</a>
     </div>
-
-    <!-- ============ NAV ============ -->
-    <header class="nav" id="top">
-      <a href="#top" class="nav-logo"
-        >Shafeyy<span style="color: var(--cyan)">.</span></a
-      >
-      <nav class="nav-links">
-        <a href="#about">About</a>
-        <a href="#skills">Skills</a>
-        <a href="#journey">Journey</a>
-        <a href="#projects">Projects</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <div class="nav-right">
-        <div class="nav-kbd">Search <kbd>&#8984;</kbd><kbd>K</kbd></div>
-        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <!-- ============ MOBILE NAV DRAWER ============ -->
-    <div class="mobile-nav-overlay" id="mobile-nav-overlay">
-      <div class="mobile-nav-box">
-        <nav class="mobile-nav-links">
-          <a href="#about">About</a>
-          <a href="#skills">Skills</a>
-          <a href="#journey">Journey</a>
-          <a href="#projects">Projects</a>
-          <a href="#contact">Contact</a>
-        </nav>
-        <div class="mobile-nav-actions">
-          <div class="mobile-nav-kbd" id="mobile-cmd-trigger">
-            <span>Search Portfolio</span>
-            <kbd>&#8984;K</kbd>
-          </div>
-        </div>
-      </div>
+    <div class="magnetic" data-cursor-hover>
+      <a href="#contact" class="btn btn-ghost">Get In Touch</a>
     </div>
+  </div>
 
-    <!-- ============ HERO ============ -->
-    <section class="hero">
-      <canvas id="hero-canvas"></canvas>
+  <div class="scroll-indicator">
+    <span>SCROLL</span>
+    <div class="scroll-mouse"><div class="scroll-dot"></div></div>
+  </div>
+</section>
 
-      <p class="hero-eyebrow mono">Ch Shafey Ali</p>
-      <h1 class="hero-title" data-split="char">Shafeyy</h1>
-
-      <div class="hero-role-wrap">
-        <p class="hero-role">
-          I'm <span class="accent" id="hero-role-text"></span
-          ><span class="accent">_</span>
-        </p>
-      </div>
-
-      <p class="hero-desc">
-        Crafting intelligent systems where code meets cinematic design — BSCS
-        (AI) student building full-stack products and machine learning tools
-        with obsessive attention to detail.
-      </p>
-
-      <div class="hero-actions">
-        <div class="magnetic" data-cursor-hover>
-          <a href="#projects" class="btn btn-primary">View Work</a>
-        </div>
-        <div class="magnetic" data-cursor-hover>
-          <a href="#contact" class="btn btn-ghost">Get In Touch</a>
-        </div>
-      </div>
-
-      <div class="scroll-indicator">
-        <span>SCROLL</span>
-        <div class="scroll-mouse">
-          <div class="scroll-dot"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
+<!-- ============================================================
      HORIZONTAL SCROLL EXPERIENCE
      Everything from here to the closing </section> below is one
      tall pinned wrapper (see assets/js/scroll-controller.js).
@@ -174,506 +122,290 @@
      here, just keep assets/js/model-scene.js's ROTATION_KEYFRAMES
      array the same length and order.
 ============================================================ -->
-    <section class="horizontal-pin">
-      <!-- 3D model — fixed on screen, rotates as the user scrolls.
+<section class="horizontal-pin">
+
+  <!-- 3D model — fixed on screen, rotates as the user scrolls.
        See assets/js/model-scene.js for the loading + rotation logic. -->
-      <div class="model-stage">
-        <canvas id="model-canvas"></canvas>
+  <div class="model-stage">
+    <canvas id="model-canvas"></canvas>
+  </div>
+
+  <div class="horizontal-viewport">
+    <div class="horizontal-track">
+
+      <!-- ============ PANEL 0 — 3D OBJECT INTRO ============ -->
+      <div class="h-panel" id="intro" data-panel="intro">
+        <div class="panel-copy">
+          <p class="eyebrow mono reveal-item">// the build</p>
+          <h2 class="title-xl reveal-item">Scroll to turn <span class="grad">the object</span>.</h2>
+          <p class="reveal-item" style="margin-top:20px;max-width:420px;color:var(--dim);line-height:1.7;">
+            Your scroll position controls its orientation — keep going to move through the rest of the portfolio.
+          </p>
+        </div>
       </div>
 
-      <div class="horizontal-viewport">
-        <div class="horizontal-track">
-          <!-- ============ PANEL 0 — 3D OBJECT INTRO ============ -->
-          <div class="h-panel" id="intro" data-panel="intro">
-            <div class="panel-copy">
-              <p class="eyebrow mono reveal-item"></p>
-              <h2 class="title-xl reveal-item">
-                I build experiences <span class="grad">that move</span>.
-              </h2>
-              <p
-                class="reveal-item"
-                style="
-                  margin-top: 20px;
-                  max-width: 420px;
-                  color: var(--dim);
-                  line-height: 1.7;
-                "
-              >
-                Design is not just what you see; it is how an idea moves, feels,
-                and connects.
-              </p>
-            </div>
+      <!-- ============ PANEL 1 — ABOUT ============ -->
+      <div class="h-panel" id="about" data-panel="about">
+        <div class="panel-copy">
+          <p class="eyebrow mono reveal-item">// about</p>
+          <div class="about-lines">
+            <p class="reveal-item">I'm <span class="hl grad-word">Ch Shafey Ali</span> — most people know me as <span class="hl">Shafeyy</span>.</p>
+            <p class="reveal-item">A <span class="hl">BSCS (AI) student</span> who treats every interface like a craft, not a checkbox.</p>
+            <p class="reveal-item">I build <span class="hl grad-word">intelligent software</span>, obsess over UI/UX, and I'm endlessly curious about automation.</p>
+            <p class="reveal-item">Still <span class="hl">learning</span>, always <span class="hl">shipping</span> — one scalable idea at a time.</p>
           </div>
-
-          <!-- ============ PANEL 1 — ABOUT ============ -->
-          <div class="h-panel" id="about" data-panel="about">
-            <div class="panel-copy">
-              <p class="eyebrow mono reveal-item"></p>
-              <div class="about-lines">
-                <p class="reveal-item">
-                  I'm <span class="hl grad-word">Ch Shafey Ali</span> — most
-                  people know me as <span class="hl">Shafeyy</span>.
-                </p>
-                <p class="reveal-item">
-                  A <span class="hl">BSCS (AI) student</span> who treats every
-                  interface like a craft, not a checkbox.
-                </p>
-                <p class="reveal-item">
-                  I build
-                  <span class="hl grad-word">intelligent software</span>, obsess
-                  over UI/UX, and I'm endlessly curious about automation.
-                </p>
-                <p class="reveal-item">
-                  Still <span class="hl">learning</span>, always
-                  <span class="hl">shipping</span> — one scalable idea at a
-                  time.
-                </p>
-              </div>
-              <div class="about-tags reveal-item">
-                <span>BSCS (Artificial Intelligence)</span>
-                <span>5th Semester</span>
-                <span>CGPA 3.69</span>
-                <span>Gujrat, Punjab, Pakistan</span>
-              </div>
-            </div>
+          <div class="about-tags reveal-item">
+            <span>BSCS (Artificial Intelligence)</span>
+            <span>5th Semester</span>
+            <span>CGPA 3.69</span>
+            <span>Gujrat, Punjab, Pakistan</span>
           </div>
+        </div>
+      </div>
 
-          <!-- ============ PANEL 2 — SKILLS ============ -->
-          <div class="h-panel" id="skills" data-panel="skills">
-            <div class="panel-copy">
-              <p class="eyebrow mono reveal-item"></p>
-              <h2 class="title-xl reveal-item">
-                Tools of the <span class="grad">craft</span>.
-              </h2>
+      <!-- ============ PANEL 2 — SKILLS ============ -->
+      <div class="h-panel" id="skills" data-panel="skills">
+        <div class="panel-copy">
+          <p class="eyebrow mono reveal-item">// skills</p>
+          <h2 class="title-xl reveal-item">Tools of the <span class="grad">craft</span>.</h2>
 
-              <div class="skills-grid reveal-item">
-                <div class="skill-group">
-                  <h3><span class="dot"></span>Programming Languages</h3>
-                  <div class="skill-bar-row">
-                    <div class="skill-bar-top">
-                      <b>Python</b><span>Highest priority</span>
-                    </div>
-                    <div class="skill-bar-track">
-                      <div class="skill-bar-fill" data-level="95"></div>
-                    </div>
-                  </div>
-                  <div class="skill-bar-row">
-                    <div class="skill-bar-top"><b>JavaScript</b></div>
-                    <div class="skill-bar-track">
-                      <div class="skill-bar-fill" data-level="88"></div>
-                    </div>
-                  </div>
-                  <div class="skill-bar-row">
-                    <div class="skill-bar-top"><b>HTML / CSS</b></div>
-                    <div class="skill-bar-track">
-                      <div class="skill-bar-fill" data-level="92"></div>
-                    </div>
-                  </div>
-                  <div class="skill-bar-row">
-                    <div class="skill-bar-top"><b>SQL</b></div>
-                    <div class="skill-bar-track">
-                      <div class="skill-bar-fill" data-level="85"></div>
-                    </div>
-                  </div>
-                  <div class="skill-bar-row">
-                    <div class="skill-bar-top"><b>PHP</b></div>
-                    <div class="skill-bar-track">
-                      <div class="skill-bar-fill" data-level="70"></div>
-                    </div>
-                  </div>
-                  <div class="skill-bar-row">
-                    <div class="skill-bar-top"><b>C++</b></div>
-                    <div class="skill-bar-track">
-                      <div class="skill-bar-fill" data-level="65"></div>
-                    </div>
-                  </div>
-                </div>
+          <div class="skills-grid reveal-item">
+            <div class="skill-group">
+              <h3><span class="dot"></span>Programming Languages</h3>
+              <div class="skill-bar-row"><div class="skill-bar-top"><b>Python</b><span>Highest priority</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-level="95"></div></div></div>
+              <div class="skill-bar-row"><div class="skill-bar-top"><b>JavaScript</b></div><div class="skill-bar-track"><div class="skill-bar-fill" data-level="88"></div></div></div>
+              <div class="skill-bar-row"><div class="skill-bar-top"><b>HTML / CSS</b></div><div class="skill-bar-track"><div class="skill-bar-fill" data-level="92"></div></div></div>
+              <div class="skill-bar-row"><div class="skill-bar-top"><b>SQL</b></div><div class="skill-bar-track"><div class="skill-bar-fill" data-level="85"></div></div></div>
+              <div class="skill-bar-row"><div class="skill-bar-top"><b>PHP</b></div><div class="skill-bar-track"><div class="skill-bar-fill" data-level="70"></div></div></div>
+              <div class="skill-bar-row"><div class="skill-bar-top"><b>C++</b></div><div class="skill-bar-track"><div class="skill-bar-fill" data-level="65"></div></div></div>
+            </div>
 
-                <div class="skill-group">
-                  <h3><span class="dot"></span>Frameworks</h3>
-                  <div class="skill-bar-row">
-                    <div class="skill-bar-top"><b>Node.js / Express.js</b></div>
-                    <div class="skill-bar-track">
-                      <div class="skill-bar-fill" data-level="85"></div>
-                    </div>
-                  </div>
-                  <div class="skill-bar-row">
-                    <div class="skill-bar-top"><b>Tailwind CSS</b></div>
-                    <div class="skill-bar-track">
-                      <div class="skill-bar-fill" data-level="90"></div>
-                    </div>
-                  </div>
-                  <div class="skill-bar-row">
-                    <div class="skill-bar-top"><b>Bootstrap</b></div>
-                    <div class="skill-bar-track">
-                      <div class="skill-bar-fill" data-level="88"></div>
-                    </div>
-                  </div>
-                  <div class="skill-bar-row">
-                    <div class="skill-bar-top"><b>GSAP</b></div>
-                    <div class="skill-bar-track">
-                      <div class="skill-bar-fill" data-level="80"></div>
-                    </div>
-                  </div>
-                </div>
+            <div class="skill-group">
+              <h3><span class="dot"></span>Frameworks</h3>
+              <div class="skill-bar-row"><div class="skill-bar-top"><b>Node.js / Express.js</b></div><div class="skill-bar-track"><div class="skill-bar-fill" data-level="85"></div></div></div>
+              <div class="skill-bar-row"><div class="skill-bar-top"><b>Tailwind CSS</b></div><div class="skill-bar-track"><div class="skill-bar-fill" data-level="90"></div></div></div>
+              <div class="skill-bar-row"><div class="skill-bar-top"><b>Bootstrap</b></div><div class="skill-bar-track"><div class="skill-bar-fill" data-level="88"></div></div></div>
+              <div class="skill-bar-row"><div class="skill-bar-top"><b>GSAP</b></div><div class="skill-bar-track"><div class="skill-bar-fill" data-level="80"></div></div></div>
+            </div>
 
-                <div class="skill-group">
-                  <h3><span class="dot"></span>Database</h3>
-                  <div class="skill-bar-row">
-                    <div class="skill-bar-top"><b>MySQL</b></div>
-                    <div class="skill-bar-track">
-                      <div class="skill-bar-fill" data-level="88"></div>
-                    </div>
-                  </div>
-                  <div class="skill-bar-row">
-                    <div class="skill-bar-top"><b>MongoDB</b></div>
-                    <div class="skill-bar-track">
-                      <div class="skill-bar-fill" data-level="72"></div>
-                    </div>
-                  </div>
-                  <div class="skill-bar-row">
-                    <div class="skill-bar-top"><b>Supabase</b></div>
-                    <div class="skill-bar-track">
-                      <div class="skill-bar-fill" data-level="75"></div>
-                    </div>
-                  </div>
-                </div>
+            <div class="skill-group">
+              <h3><span class="dot"></span>Database</h3>
+              <div class="skill-bar-row"><div class="skill-bar-top"><b>MySQL</b></div><div class="skill-bar-track"><div class="skill-bar-fill" data-level="88"></div></div></div>
+              <div class="skill-bar-row"><div class="skill-bar-top"><b>MongoDB</b></div><div class="skill-bar-track"><div class="skill-bar-fill" data-level="72"></div></div></div>
+              <div class="skill-bar-row"><div class="skill-bar-top"><b>Supabase</b></div><div class="skill-bar-track"><div class="skill-bar-fill" data-level="75"></div></div></div>
+            </div>
 
-                <div class="skill-group">
-                  <h3><span class="dot"></span>AI &amp; Technologies</h3>
-                  <div class="skill-chip-row">
-                    <span class="skill-chip">OpenAI</span
-                    ><span class="skill-chip">TensorFlow</span>
-                    <span class="skill-chip">Scikit-learn</span
-                    ><span class="skill-chip">OpenCV</span>
-                    <span class="skill-chip">LangChain</span
-                    ><span class="skill-chip">bcrypt</span>
-                  </div>
-                </div>
-
-                <div class="skill-group">
-                  <h3><span class="dot"></span>Tools</h3>
-                  <div class="skill-chip-row">
-                    <span class="skill-chip">Git</span
-                    ><span class="skill-chip">GitHub</span>
-                    <span class="skill-chip">VS Code</span
-                    ><span class="skill-chip">Cursor</span>
-                    <span class="skill-chip">Codex</span
-                    ><span class="skill-chip">Antigravity</span>
-                    <span class="skill-chip">Edge Library</span
-                    ><span class="skill-chip">Canva</span>
-                  </div>
-                </div>
+            <div class="skill-group">
+              <h3><span class="dot"></span>AI &amp; Technologies</h3>
+              <div class="skill-chip-row">
+                <span class="skill-chip">OpenAI</span><span class="skill-chip">TensorFlow</span>
+                <span class="skill-chip">Scikit-learn</span><span class="skill-chip">OpenCV</span>
+                <span class="skill-chip">LangChain</span><span class="skill-chip">bcrypt</span>
               </div>
             </div>
-          </div>
 
-          <!-- ============ PANEL 3 — LEARNING JOURNEY ============ -->
-          <div class="h-panel" id="journey" data-panel="journey">
-            <div class="panel-copy">
-              <p class="eyebrow mono reveal-item"></p>
-              <h2 class="title-xl reveal-item">
-                No job title yet. <span class="grad">Plenty of momentum.</span>
-              </h2>
-
-              <div class="journey-compact reveal-item">
-                <div class="journey-compact-item">
-                  <h4>Personal Projects</h4>
-                  <p>
-                    Building real, working software outside the classroom — from
-                    order-booking automation to computer vision tools.
-                  </p>
-                </div>
-                <div class="journey-compact-item">
-                  <h4>University Projects</h4>
-                  <p>
-                    Applying coursework to real problems, using every assignment
-                    as a chance to ship something I'm proud of.
-                  </p>
-                </div>
-                <div class="journey-compact-item">
-                  <h4>Self Learning &amp; Continuous Learning</h4>
-                  <p>
-                    Teaching myself new frameworks and AI tooling ahead of the
-                    curriculum — currently deep in LangChain and applied ML.
-                  </p>
-                </div>
-                <div class="journey-compact-item">
-                  <h4>Problem Solving</h4>
-                  <p>
-                    I default to breaking problems down before reaching for a
-                    framework — the tool comes after the thinking.
-                  </p>
-                </div>
-                <div class="journey-compact-item">
-                  <h4>Open Source Interest</h4>
-                  <p>
-                    Actively reading and learning from open-source codebases,
-                    with plans to start contributing soon.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ============ PANEL 4 — PROJECTS ============ -->
-          <div class="h-panel" id="projects" data-panel="projects">
-            <div class="panel-copy">
-              <p class="eyebrow mono reveal-item"></p>
-              <h2 class="title-xl reveal-item">
-                Things I've <span class="grad">built</span>.
-              </h2>
-
-              <div class="mini-project-list reveal-item">
-                <article class="mini-project">
-                  <div class="project-tags">
-                    <span>AI</span><span>NLP</span><span>Automation</span>
-                  </div>
-                  <h3>Olivia Order Booker</h3>
-                  <p>
-                    AI-powered order booking — tokenizes natural-language input
-                    from a salesperson and extracts customer, product and
-                    delivery details into structured records automatically.
-                  </p>
-                  <div class="project-stack">
-                    Node.js · Express.js · MySQL · OpenAI API
-                  </div>
-                </article>
-                <article class="mini-project">
-                  <div class="project-tags">
-                    <span>Full Stack</span><span>E-commerce</span>
-                  </div>
-                  <h3>SA Parties</h3>
-                  <p>
-                    Scalable full-stack e-commerce platform for party &amp;
-                    special-occasion products — auth, cart, checkout, admin
-                    dashboard and order management.
-                  </p>
-                  <div class="project-stack">
-                    Node.js · Express.js · MySQL · JavaScript
-                  </div>
-                </article>
-                <article class="mini-project">
-                  <div class="project-tags">
-                    <span>AI</span><span>Computer Vision</span>
-                  </div>
-                  <h3>ASL Detector</h3>
-                  <p>
-                    Real-time American Sign Language recognition via webcam —
-                    detects hand gestures and identifies the corresponding ASL
-                    alphabet to assist communication.
-                  </p>
-                  <div class="project-stack">
-                    Python · OpenCV · Machine Learning
-                  </div>
-                </article>
-              </div>
-            </div>
-          </div>
-
-          <!-- ============ PANEL 5 — CONTACT ============ -->
-          <div class="h-panel" id="contact" data-panel="contact">
-            <div class="panel-copy">
-              <p class="eyebrow mono reveal-item"></p>
-              <h2 class="title-xl reveal-item">
-                Let's build something <span class="grad">intelligent</span>.
-              </h2>
-
-              <div class="reveal-item" style="margin-top: 24px">
-                <p
-                  style="color: var(--dim); font-size: 1rem; line-height: 1.75"
-                >
-                  Open to internships, freelance work, and interesting problems.
-                  Reach out — I read everything myself.
-                </p>
-                <div class="contact-links">
-                  <a
-                    href="mailto:shafey8124@gmail.com"
-                    class="contact-link"
-                    data-cursor-hover
-                  >
-                    <span>Email</span><span>shafey8124@gmail.com</span>
-                  </a>
-                  <a
-                    href="tel:03036319621"
-                    class="contact-link"
-                    data-cursor-hover
-                  >
-                    <span>Phone</span><span>0303 6319621</span>
-                  </a>
-                  <a
-                    href="https://github.com/shafey14-hash"
-                    target="_blank"
-                    rel="noopener"
-                    class="contact-link"
-                    data-cursor-hover
-                  >
-                    <span>GitHub</span><span>@shafey14-hash</span>
-                  </a>
-                  <a
-                    href="https://linkedin.com/in/shafey-ali-87218b2bb?utm_source=share_via&utm_content=profile&utm_medium=member_ios"
-                    target="_blank"
-                    rel="noopener"
-                    class="contact-link"
-                    data-cursor-hover
-                  >
-                    <span>LinkedIn</span><span>@shafey-ali</span>
-                  </a>
-                  <a
-                    href="https://instagram.com/shafeyy_xx?igsi=MWRkbXpyamMwNDFwYg%3D%3D&utm_source=qr"
-                    target="_blank"
-                    rel="noopener"
-                    class="contact-link"
-                    data-cursor-hover
-                  >
-                    <span>Instagram</span><span>@shafeyy_xx</span>
-                  </a>
-                </div>
-              </div>
-
-              <div
-                class="glass contact-form reveal-item"
-                style="margin-top: 28px"
-              >
-                <div id="form-success" class="form-success">
-                  <svg
-                    width="44"
-                    height="44"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    style="color: var(--cyan)"
-                  >
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                    <path d="m22 4-10 10-3-3" />
-                  </svg>
-                  <p
-                    style="
-                      font-family: var(--font-display);
-                      font-size: 1.1rem;
-                      font-weight: 600;
-                    "
-                  >
-                    Message sent.
-                  </p>
-                  <p style="color: var(--dim); font-size: 0.88rem">
-                    I'll get back to you soon.
-                  </p>
-                </div>
-
-                <form id="contact-form" novalidate>
-                  <div class="field">
-                    <input
-                      type="text"
-                      id="c-name"
-                      name="name"
-                      placeholder=" "
-                      autocomplete="name"
-                    />
-                    <label for="c-name">Name</label>
-                    <span class="field-error"></span>
-                  </div>
-                  <div class="field">
-                    <input
-                      type="email"
-                      id="c-email"
-                      name="email"
-                      placeholder=" "
-                      autocomplete="email"
-                    />
-                    <label for="c-email">Email</label>
-                    <span class="field-error"></span>
-                  </div>
-                  <div class="field">
-                    <input
-                      type="text"
-                      id="c-subject"
-                      name="subject"
-                      placeholder=" "
-                    />
-                    <label for="c-subject">Subject</label>
-                    <span class="field-error"></span>
-                  </div>
-                  <div class="field">
-                    <textarea
-                      id="c-message"
-                      name="message"
-                      rows="3"
-                      placeholder=" "
-                    ></textarea>
-                    <label for="c-message">Message</label>
-                    <span class="field-error"></span>
-                  </div>
-                  <button
-                    type="submit"
-                    id="submit-btn"
-                    class="btn btn-primary"
-                    data-cursor-hover
-                    style="width: 100%"
-                  >
-                    <span>Send Message</span>
-                  </button>
-                </form>
+            <div class="skill-group">
+              <h3><span class="dot"></span>Tools</h3>
+              <div class="skill-chip-row">
+                <span class="skill-chip">Git</span><span class="skill-chip">GitHub</span>
+                <span class="skill-chip">VS Code</span><span class="skill-chip">Cursor</span>
+                <span class="skill-chip">Codex</span><span class="skill-chip">Antigravity</span>
+                <span class="skill-chip">Edge Library</span><span class="skill-chip">Canva</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <p class="horizontal-hint mono">scroll to explore</p>
-    </section>
 
-    <footer class="footer">
-      <p class="mono">
-        &copy; <span id="year"></span> Shafeyy — Ch Shafey Ali. Built from
-        scratch, no templates.
-      </p>
-      <a href="#top" class="footer-top">&uarr; top</a>
-    </footer>
+      <!-- ============ PANEL 3 — LEARNING JOURNEY ============ -->
+      <div class="h-panel" id="journey" data-panel="journey">
+        <div class="panel-copy">
+          <p class="eyebrow mono reveal-item">// learning journey</p>
+          <h2 class="title-xl reveal-item">No job title yet. <span class="grad">Plenty of momentum.</span></h2>
 
-    <!-- ============ MUSIC TOGGLE ============ -->
-    <button
-      class="music-toggle"
-      id="music-toggle-btn"
-      aria-pressed="false"
-      aria-label="Toggle ambient music"
-      data-cursor-hover
-      data-cursor-text="音"
-    >
-      <div class="music-bars"><span></span><span></span><span></span></div>
-    </button>
-
-    <!-- ============ COMMAND PALETTE ============ -->
-    <div class="cmdk">
-      <div class="cmdk-box glass">
-        <input
-          class="cmdk-input"
-          type="text"
-          placeholder="Jump to a section, or search... (Esc to close)"
-        />
-        <div class="cmdk-list"></div>
+          <div class="journey-compact reveal-item">
+            <div class="journey-compact-item">
+              <h4>Personal Projects</h4>
+              <p>Building real, working software outside the classroom — from order-booking automation to computer vision tools.</p>
+            </div>
+            <div class="journey-compact-item">
+              <h4>University Projects</h4>
+              <p>Applying coursework to real problems, using every assignment as a chance to ship something I'm proud of.</p>
+            </div>
+            <div class="journey-compact-item">
+              <h4>Self Learning &amp; Continuous Learning</h4>
+              <p>Teaching myself new frameworks and AI tooling ahead of the curriculum — currently deep in LangChain and applied ML.</p>
+            </div>
+            <div class="journey-compact-item">
+              <h4>Problem Solving</h4>
+              <p>I default to breaking problems down before reaching for a framework — the tool comes after the thinking.</p>
+            </div>
+            <div class="journey-compact-item">
+              <h4>Open Source Interest</h4>
+              <p>Actively reading and learning from open-source codebases, with plans to start contributing soon.</p>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- ============ PANEL 4 — PROJECTS ============ -->
+      <div class="h-panel" id="projects" data-panel="projects">
+        <div class="panel-copy">
+          <p class="eyebrow mono reveal-item">// selected work</p>
+          <h2 class="title-xl reveal-item">Things I've <span class="grad">built</span>.</h2>
+
+          <div class="mini-project-list reveal-item">
+            <article class="mini-project">
+              <div class="project-tags"><span>AI</span><span>NLP</span><span>Automation</span></div>
+              <h3>Olivia Order Booker</h3>
+              <p>AI-powered order booking — tokenizes natural-language input from a salesperson and extracts customer, product and delivery details into structured records automatically.</p>
+              <div class="project-stack">Node.js · Express.js · MySQL · OpenAI API</div>
+            </article>
+            <article class="mini-project">
+              <div class="project-tags"><span>Full Stack</span><span>E-commerce</span></div>
+              <h3>SA Parties</h3>
+              <p>Scalable full-stack e-commerce platform for party &amp; special-occasion products — auth, cart, checkout, admin dashboard and order management.</p>
+              <div class="project-stack">Node.js · Express.js · MySQL · JavaScript</div>
+              <a href="https://sa-parties.vercel.app/" target="_blank" rel="noopener" class="btn btn-ghost small magnetic" data-cursor-hover>
+                Visit Site
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M8 7h9v9"/></svg>
+              </a>
+            </article>
+            <article class="mini-project">
+              <div class="project-tags"><span>AI</span><span>Computer Vision</span></div>
+              <h3>ASL Detector</h3>
+              <p>Real-time American Sign Language recognition via webcam — detects hand gestures and identifies the corresponding ASL alphabet to assist communication.</p>
+              <div class="project-stack">Python · OpenCV · Machine Learning</div>
+            </article>
+            <article class="mini-project">
+              <div class="project-tags"><span>Full Stack</span><span>Restaurant</span></div>
+              <h3>Little Chef Pizza</h3>
+              <p>A professional restaurant website and management system for Little Chef Pizza — customer ordering on the front end, restaurant-side order management on the back end.</p>
+              <div class="project-stack">Full Stack Web App</div>
+              <a href="https://little-chef-pizza.vercel.app/" target="_blank" rel="noopener" class="btn btn-ghost small magnetic" data-cursor-hover>
+                Visit Site
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M8 7h9v9"/></svg>
+              </a>
+            </article>
+            <article class="mini-project">
+              <div class="project-tags"><span>Dev Tools</span><span>Python</span></div>
+              <h3>PyTerminal</h3>
+              <p>An online Python IDE and terminal that runs entirely in the browser — write and execute Python code with no local setup required.</p>
+              <div class="project-stack">Browser-based Python IDE</div>
+              <a href="https://pyterminal-ide.vercel.app/" target="_blank" rel="noopener" class="btn btn-ghost small magnetic" data-cursor-hover>
+                Visit Site
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M8 7h9v9"/></svg>
+              </a>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ PANEL 5 — CONTACT ============ -->
+      <div class="h-panel" id="contact" data-panel="contact">
+        <div class="panel-copy">
+          <p class="eyebrow mono reveal-item">// contact</p>
+          <h2 class="title-xl reveal-item">Let's build something <span class="grad">intelligent</span>.</h2>
+
+          <div class="reveal-item" style="margin-top:24px;">
+            <p style="color:var(--dim);font-size:1rem;line-height:1.75;">
+              Open to internships, freelance work, and interesting problems. Reach out — I read everything myself.
+            </p>
+            <div class="contact-links">
+              <a href="mailto:shafey8124@gmail.com" class="contact-link" data-cursor-hover>
+                <span>Email</span><span>shafey8124@gmail.com</span>
+              </a>
+              <a href="tel:03036319621" class="contact-link" data-cursor-hover>
+                <span>Phone</span><span>0303 6319621</span>
+              </a>
+              <a href="https://github.com/shafeyy" target="_blank" rel="noopener" class="contact-link" data-cursor-hover>
+                <span>GitHub</span><span>github.com/shafeyy</span>
+              </a>
+              <a href="https://linkedin.com/in/shafeyy" target="_blank" rel="noopener" class="contact-link" data-cursor-hover>
+                <span>LinkedIn</span><span>linkedin.com/in/shafeyy</span>
+              </a>
+              <a href="https://instagram.com/shafeyy" target="_blank" rel="noopener" class="contact-link" data-cursor-hover>
+                <span>Instagram</span><span>@shafeyy</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="glass contact-form reveal-item" style="margin-top:28px;">
+            <div id="form-success" class="form-success">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--cyan)"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m22 4-10 10-3-3"/></svg>
+              <p style="font-family:var(--font-display);font-size:1.1rem;font-weight:600;">Message sent.</p>
+              <p style="color:var(--dim);font-size:.88rem;">I'll get back to you soon.</p>
+            </div>
+
+            <form id="contact-form" novalidate>
+              <div class="field">
+                <input type="text" id="c-name" name="name" placeholder=" " autocomplete="name">
+                <label for="c-name">Name</label>
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <input type="email" id="c-email" name="email" placeholder=" " autocomplete="email">
+                <label for="c-email">Email</label>
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <input type="text" id="c-subject" name="subject" placeholder=" ">
+                <label for="c-subject">Subject</label>
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <textarea id="c-message" name="message" rows="3" placeholder=" "></textarea>
+                <label for="c-message">Message</label>
+                <span class="field-error"></span>
+              </div>
+              <button type="submit" id="submit-btn" class="btn btn-primary" data-cursor-hover style="width:100%;">
+                <span>Send Message</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
     </div>
+  </div>
+  <p class="horizontal-hint mono">scroll to explore</p>
+</section>
 
-    <!-- ============ SCRIPTS ============ -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<footer class="footer">
+  <p class="mono">&copy; <span id="year"></span> Shafeyy — Ch Shafey Ali. Built from scratch, no templates.</p>
+  <a href="#top" class="footer-top">&uarr; top</a>
+</footer>
 
-    <script src="assets/js/core.js?v=2"></script>
-    <script type="module" src="assets/js/webgl.js?v=2"></script>
-    <script type="module" src="assets/js/model-scene.js?v=2"></script>
-    <script src="assets/js/scroll-controller.js?v=2"></script>
-    <script src="assets/js/horizontal-scroll.js?v=2"></script>
-    <script src="assets/js/skills.js?v=2"></script>
-    <script src="assets/js/tilt.js?v=2"></script>
-    <script src="assets/js/typewriter.js?v=2"></script>
-    <script src="assets/js/contact.js?v=2"></script>
-    <script src="assets/js/command-palette.js?v=2"></script>
-    <script src="assets/js/music.js?v=2"></script>
-    <script>
-      document.getElementById("year").textContent = new Date().getFullYear();
-    </script>
-  </body>
+<!-- ============ MUSIC TOGGLE ============ -->
+<button class="music-toggle" id="music-toggle-btn" aria-pressed="false" aria-label="Toggle ambient music" data-cursor-hover data-cursor-text="音">
+  <div class="music-bars"><span></span><span></span><span></span></div>
+</button>
+
+<!-- ============ COMMAND PALETTE ============ -->
+<div class="cmdk">
+  <div class="cmdk-box glass">
+    <input class="cmdk-input" type="text" placeholder="Jump to a section, or search... (Esc to close)">
+    <div class="cmdk-list"></div>
+  </div>
+</div>
+
+<!-- ============ SCRIPTS ============ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script src="assets/js/core.js"></script>
+<script type="module" src="assets/js/webgl.js"></script>
+<script type="module" src="assets/js/model-scene.js"></script>
+<script src="assets/js/scroll-controller.js"></script>
+<script src="assets/js/horizontal-scroll.js"></script>
+<script src="assets/js/skills.js"></script>
+<script src="assets/js/tilt.js"></script>
+<script src="assets/js/typewriter.js"></script>
+<script src="assets/js/contact.js"></script>
+<script src="assets/js/command-palette.js"></script>
+<script src="assets/js/music.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
 </html>

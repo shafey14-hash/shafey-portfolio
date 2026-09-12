@@ -12,7 +12,9 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 
-const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const reduceMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)",
+).matches;
 
 /* ================= 1. Loader noise shader ================= */
 function initLoaderShader() {
@@ -27,7 +29,12 @@ function initLoaderShader() {
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
   const material = new THREE.ShaderMaterial({
-    uniforms: { u_time: { value: 0 }, u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) } },
+    uniforms: {
+      u_time: { value: 0 },
+      u_resolution: {
+        value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+      },
+    },
     vertexShader: `
       void main() { gl_Position = vec4(position, 1.0); }
     `,
@@ -74,7 +81,10 @@ function initLoaderShader() {
 
   window.addEventListener("resize", () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
-    material.uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight);
+    material.uniforms.u_resolution.value.set(
+      window.innerWidth,
+      window.innerHeight,
+    );
   });
 
   // stop rendering once the loader is gone (saves GPU after boot)
@@ -97,10 +107,19 @@ function initHeroScene() {
   if (!canvas) return;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 100);
+  const camera = new THREE.PerspectiveCamera(
+    42,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    100,
+  );
   camera.position.set(0, 0, 7);
 
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    alpha: true,
+    antialias: true,
+  });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -124,7 +143,7 @@ function initHeroScene() {
       color: 0xffffff,
       clearcoat: 1,
       clearcoatRoughness: 0.1,
-    })
+    }),
   );
   glass.position.set(1.6, 0.4, 0);
   scene.add(glass);
@@ -132,7 +151,12 @@ function initHeroScene() {
   /* --- wireframe icosahedron --- */
   const wire = new THREE.Mesh(
     new THREE.IcosahedronGeometry(1.5, 1),
-    new THREE.MeshBasicMaterial({ color: 0x6fe7dd, wireframe: true, transparent: true, opacity: 0.35 })
+    new THREE.MeshBasicMaterial({
+      color: 0x6fe7dd,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.35,
+    }),
   );
   wire.position.set(-1.8, -0.6, -1.5);
   scene.add(wire);
@@ -149,7 +173,12 @@ function initHeroScene() {
   pGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
   const particles = new THREE.Points(
     pGeo,
-    new THREE.PointsMaterial({ size: 0.02, color: 0xffffff, transparent: true, opacity: 0.5 })
+    new THREE.PointsMaterial({
+      size: 0.02,
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.5,
+    }),
   );
   scene.add(particles);
 
@@ -158,7 +187,12 @@ function initHeroScene() {
   try {
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.55, 0.6, 0.15);
+    const bloom = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      0.55,
+      0.6,
+      0.15,
+    );
     composer.addPass(bloom);
   } catch (err) {
     composer = null; // fall back to plain renderer if postprocessing addons fail to load
@@ -173,6 +207,9 @@ function initHeroScene() {
   });
 
   const clock = new THREE.Clock();
+  let rafId = null;
+  let running = false;
+
   function animate() {
     const t = clock.getElapsedTime();
     if (!reduceMotion) {
@@ -191,9 +228,34 @@ function initHeroScene() {
 
     if (composer) composer.render();
     else renderer.render(scene, camera);
-    requestAnimationFrame(animate);
+    rafId = requestAnimationFrame(animate);
   }
-  animate();
+
+  function start() {
+    if (running) return;
+    running = true;
+    clock.getDelta(); // discard the elapsed-while-paused time so nothing jumps
+    animate();
+  }
+  function stop() {
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+
+  // Performance: the hero is only ever seen once, at the top of the
+  // page — there's no reason to keep rendering it once the user has
+  // scrolled well past it into the horizontal experience below.
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((entry) => (entry.isIntersecting ? start() : stop())),
+      { threshold: 0.01 },
+    );
+    io.observe(canvas);
+  } else {
+    start();
+  }
 
   window.addEventListener("resize", () => {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -215,15 +277,25 @@ function triggerEasterEgg3D() {
   eggBusy = true;
 
   const canvas = document.createElement("canvas");
-  canvas.style.cssText = "position:fixed;inset:0;z-index:970;pointer-events:none;opacity:0;transition:opacity .4s ease;";
+  canvas.style.cssText =
+    "position:fixed;inset:0;z-index:970;pointer-events:none;opacity:0;transition:opacity .4s ease;";
   document.body.appendChild(canvas);
 
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    alpha: true,
+    antialias: true,
+  });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+  const camera = new THREE.PerspectiveCamera(
+    50,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    100,
+  );
   camera.position.set(0, 0, 7);
 
   scene.add(new THREE.AmbientLight(0xffffff, 0.6));
@@ -234,7 +306,12 @@ function triggerEasterEgg3D() {
   // a central monogram-ish shape that appears, spins up, then "explodes"
   const core = new THREE.Mesh(
     new THREE.IcosahedronGeometry(0.6, 0),
-    new THREE.MeshStandardMaterial({ color: 0x6fe7dd, emissive: 0x4c7eff, emissiveIntensity: 0.8, roughness: 0.3 })
+    new THREE.MeshStandardMaterial({
+      color: 0x6fe7dd,
+      emissive: 0x4c7eff,
+      emissiveIntensity: 0.8,
+      roughness: 0.3,
+    }),
   );
   scene.add(core);
 
@@ -250,7 +327,7 @@ function triggerEasterEgg3D() {
         emissive: COLORS[i % COLORS.length],
         emissiveIntensity: 0.6,
         roughness: 0.4,
-      })
+      }),
     );
     const theta = Math.random() * Math.PI * 2;
     const phi = Math.acos(2 * Math.random() - 1);
@@ -258,9 +335,13 @@ function triggerEasterEgg3D() {
     mesh.userData.velocity = new THREE.Vector3(
       Math.sin(phi) * Math.cos(theta) * speed,
       Math.sin(phi) * Math.sin(theta) * speed,
-      Math.cos(phi) * speed * 0.6
+      Math.cos(phi) * speed * 0.6,
     );
-    mesh.userData.spin = new THREE.Vector3(Math.random() * 4, Math.random() * 4, Math.random() * 4);
+    mesh.userData.spin = new THREE.Vector3(
+      Math.random() * 4,
+      Math.random() * 4,
+      Math.random() * 4,
+    );
     scene.add(mesh);
     shards.push(mesh);
   }
@@ -269,7 +350,14 @@ function triggerEasterEgg3D() {
   try {
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.9, 0.7, 0.1));
+    composer.addPass(
+      new UnrealBloomPass(
+        new THREE.Vector2(window.innerWidth, window.innerHeight),
+        0.9,
+        0.7,
+        0.1,
+      ),
+    );
   } catch {
     composer = null;
   }
@@ -288,7 +376,10 @@ function triggerEasterEgg3D() {
 
     core.rotation.x += dt * 6;
     core.rotation.y += dt * 8;
-    const coreScale = elapsedMs < EXPLODE_AT ? 1 + (elapsedMs / EXPLODE_AT) * 0.6 : Math.max(0, 1.6 - (elapsedMs - EXPLODE_AT) / 220);
+    const coreScale =
+      elapsedMs < EXPLODE_AT
+        ? 1 + (elapsedMs / EXPLODE_AT) * 0.6
+        : Math.max(0, 1.6 - (elapsedMs - EXPLODE_AT) / 220);
     core.scale.setScalar(Math.max(coreScale, 0));
     core.visible = coreScale > 0.01;
 
@@ -298,7 +389,10 @@ function triggerEasterEgg3D() {
         mesh.userData.velocity.multiplyScalar(0.985); // gentle damping
         mesh.rotation.x += mesh.userData.spin.x * dt;
         mesh.rotation.y += mesh.userData.spin.y * dt;
-        const life = Math.max(0, 1 - (elapsedMs - EXPLODE_AT) / (DURATION - EXPLODE_AT));
+        const life = Math.max(
+          0,
+          1 - (elapsedMs - EXPLODE_AT) / (DURATION - EXPLODE_AT),
+        );
         mesh.material.opacity = life;
         mesh.material.transparent = true;
         mesh.scale.setScalar(life);

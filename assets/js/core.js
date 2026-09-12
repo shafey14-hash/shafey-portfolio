@@ -6,13 +6,19 @@
 (function () {
   "use strict";
 
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
   window.SITE = { reduceMotion };
 
   /* ---------------- Lenis smooth scroll ---------------- */
   let lenis = null;
   if (!reduceMotion && window.Lenis) {
-    lenis = new Lenis({ duration: 1.15, smoothWheel: true, easing: (t) => 1 - Math.pow(1 - t, 3) });
+    lenis = new Lenis({
+      duration: 1.15,
+      smoothWheel: true,
+      easing: (t) => 1 - Math.pow(1 - t, 3),
+    });
     function raf(time) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -33,20 +39,69 @@
       a.addEventListener("click", (e) => {
         const id = a.getAttribute("href");
         if (id.length < 2) return;
+        e.preventDefault();
+
+        // "#top" targets the fixed-position header itself, which always
+        // reports a viewport-relative position near 0 — scrollIntoView/
+        // Lenis.scrollTo on it doesn't reliably return to the real page
+        // top. Special-case it to scroll to an explicit pixel position.
+        if (id === "#top") {
+          if (lenis) lenis.scrollTo(0);
+          else
+            window.scrollTo({
+              top: 0,
+              behavior: reduceMotion ? "auto" : "smooth",
+            });
+          return;
+        }
+
         const target = document.querySelector(id);
         if (!target) return;
-        e.preventDefault();
 
         // sections inside the horizontal-scroll experience need special
         // handling — see assets/js/scroll-controller.js for __scrollToPanel
-        if (target.classList.contains("h-panel") && typeof window.__scrollToPanel === "function") {
+        if (
+          target.classList.contains("h-panel") &&
+          typeof window.__scrollToPanel === "function"
+        ) {
           window.__scrollToPanel(target.id);
           return;
         }
 
         if (lenis) lenis.scrollTo(target, { offset: -20 });
-        else target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+        else
+          target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
       });
+    });
+  }
+
+  /* ---------------- Mobile nav toggle ---------------- */
+  function initMobileNav() {
+    const burger = document.getElementById("navBurger");
+    const links = document.getElementById("navLinks");
+    if (!burger || !links) return;
+
+    function closeMenu() {
+      links.classList.remove("open");
+      burger.classList.remove("open");
+      burger.setAttribute("aria-expanded", "false");
+    }
+
+    burger.addEventListener("click", () => {
+      const willOpen = !links.classList.contains("open");
+      links.classList.toggle("open", willOpen);
+      burger.classList.toggle("open", willOpen);
+      burger.setAttribute("aria-expanded", String(willOpen));
+    });
+
+    // closing on link click is handled by initAnchorNav's own click
+    // listener already firing (preventDefault + scroll), we just also
+    // need to visually close the overlay menu here
+    links
+      .querySelectorAll("a")
+      .forEach((a) => a.addEventListener("click", closeMenu));
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeMenu();
     });
   }
 
@@ -88,13 +143,17 @@
     const label = document.querySelector(".cursor-label");
     if (!dot || !ring) return;
 
-    let mx = 0, my = 0, rx = 0, ry = 0;
+    let mx = 0,
+      my = 0,
+      rx = 0,
+      ry = 0;
 
     window.addEventListener("mousemove", (e) => {
       mx = e.clientX;
       my = e.clientY;
       dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
-      if (label) label.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
+      if (label)
+        label.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
     });
 
     (function loop() {
@@ -135,7 +194,10 @@
         const y = e.clientY - r.top - r.height / 2;
         el.style.transform = `translate(${x * 0.3}px, ${y * 0.4}px)`;
       });
-      el.addEventListener("mouseleave", () => (el.style.transform = "translate(0,0)"));
+      el.addEventListener(
+        "mouseleave",
+        () => (el.style.transform = "translate(0,0)"),
+      );
     });
   }
 
@@ -171,7 +233,7 @@
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.15 },
     );
     items.forEach((el) => io.observe(el));
   }
@@ -188,7 +250,8 @@
         const wrap = document.createElement("span");
         wrap.className = "split-word";
         const inner = document.createElement("span");
-        inner.textContent = part + (mode === "word" && i < parts.length - 1 ? "\u00A0" : "");
+        inner.textContent =
+          part + (mode === "word" && i < parts.length - 1 ? "\u00A0" : "");
         inner.style.transitionDelay = `${i * 28}ms`;
         wrap.appendChild(inner);
         wrap.setAttribute("aria-hidden", "true");
@@ -196,77 +259,25 @@
       });
 
       if (reduceMotion) {
-        el.querySelectorAll(".split-word").forEach((w) => w.classList.add("in"));
+        el.querySelectorAll(".split-word").forEach((w) =>
+          w.classList.add("in"),
+        );
         return;
       }
       const io = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              entry.target.querySelectorAll(".split-word").forEach((w) => w.classList.add("in"));
+              entry.target
+                .querySelectorAll(".split-word")
+                .forEach((w) => w.classList.add("in"));
               io.unobserve(entry.target);
             }
           });
         },
-        { threshold: 0.3 }
+        { threshold: 0.3 },
       );
       io.observe(el);
-    });
-  }
-
-  /* ---------------- Mobile Nav Drawer ---------------- */
-  function initMobileNav() {
-    const toggleBtn = document.getElementById("mobile-menu-toggle");
-    const overlay = document.getElementById("mobile-nav-overlay");
-    const cmdTrigger = document.getElementById("mobile-cmd-trigger");
-    if (!toggleBtn || !overlay) return;
-
-    function closeNav() {
-      toggleBtn.classList.remove("active");
-      overlay.classList.remove("open");
-      document.body.style.overflow = "";
-    }
-
-    function openNav() {
-      toggleBtn.classList.add("active");
-      overlay.classList.add("open");
-      document.body.style.overflow = "hidden";
-    }
-
-    toggleBtn.addEventListener("click", () => {
-      if (overlay.classList.contains("open")) {
-        closeNav();
-      } else {
-        openNav();
-      }
-    });
-
-    overlay.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        closeNav();
-      });
-    });
-
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) closeNav();
-    });
-
-    if (cmdTrigger) {
-      cmdTrigger.addEventListener("click", () => {
-        closeNav();
-        const cmdk = document.querySelector(".cmdk");
-        if (cmdk) {
-          cmdk.classList.add("open");
-          const input = cmdk.querySelector(".cmdk-input");
-          if (input) input.focus();
-        }
-      });
-    }
-
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && overlay.classList.contains("open")) {
-        closeNav();
-      }
     });
   }
 

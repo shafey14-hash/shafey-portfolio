@@ -14,7 +14,11 @@
     { label: "Learning Journey", hint: "timeline", panel: "journey" },
     { label: "Projects", hint: "work", panel: "projects" },
     { label: "Contact", hint: "say hi", panel: "contact" },
-    { label: "Toggle Music", hint: "ambient", action: () => document.getElementById("music-toggle-btn")?.click() },
+    {
+      label: "Toggle Music",
+      hint: "ambient",
+      action: () => document.getElementById("music-toggle-btn")?.click(),
+    },
     { label: "GitHub", hint: "external", href: "https://github.com/shafeyy" },
     { label: "Email", hint: "mailto", href: "mailto:shafey8124@gmail.com" },
   ];
@@ -40,7 +44,10 @@
   function runItem(item) {
     close();
     if (item.href) {
-      window.open(item.href, item.href.startsWith("mailto") ? "_self" : "_blank");
+      window.open(
+        item.href,
+        item.href.startsWith("mailto") ? "_self" : "_blank",
+      );
       return;
     }
     if (item.action) {
@@ -49,6 +56,12 @@
     }
     if (item.panel && typeof window.__scrollToPanel === "function") {
       window.__scrollToPanel(item.panel);
+      return;
+    }
+    if (item.target === "#top") {
+      // same fixed-header caveat as core.js's initAnchorNav — see there for details
+      if (window.__lenis) window.__lenis.scrollTo(0);
+      else window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
     if (item.target) {
@@ -80,6 +93,9 @@
     render();
   });
 
+  const searchTrigger = document.getElementById("navSearchTrigger");
+  if (searchTrigger) searchTrigger.addEventListener("click", open);
+
   window.addEventListener("keydown", (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
       e.preventDefault();
@@ -106,12 +122,19 @@
     if (e.target === palette) close();
   });
 
-  document.querySelectorAll(".nav-kbd").forEach((btn) => {
-    btn.addEventListener("click", open);
-  });
-
   /* ---------------- Hidden Konami-code easter egg ---------------- */
-  const KONAMI = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
+  const KONAMI = [
+    "ArrowUp",
+    "ArrowUp",
+    "ArrowDown",
+    "ArrowDown",
+    "ArrowLeft",
+    "ArrowRight",
+    "ArrowLeft",
+    "ArrowRight",
+    "b",
+    "a",
+  ];
   let buffer = [];
 
   window.addEventListener("keydown", (e) => {
@@ -163,7 +186,10 @@
           { transform: "translate(0,0) scale(1)", opacity: 1 },
           { transform: `translate(${dx}px, ${dy}px) scale(0)`, opacity: 0 },
         ],
-        { duration: 900 + Math.random() * 500, easing: "cubic-bezier(.16,.84,.44,1)" }
+        {
+          duration: 900 + Math.random() * 500,
+          easing: "cubic-bezier(.16,.84,.44,1)",
+        },
       ).onfinish = () => p.remove();
     }
   }
