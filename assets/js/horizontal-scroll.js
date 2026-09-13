@@ -1,12 +1,11 @@
 /* ============================================================
-   horizontal-scroll.js — listens for the `horizontal:progress`
-   event from scroll-controller.js and does two things:
-     1. Moves .horizontal-track sideways (the actual "horizontal
-        scrolling" — no native horizontal scrollbar involved).
-     2. Toggles `.is-active` on whichever .h-panel is currently
-        centered, which drives the CSS stagger-reveal for that
-        panel's `.reveal-item` children and (re)triggers the
-        skill-bar fill animation (see assets/js/skills.js).
+   horizontal-scroll.js — performs the actual horizontal slide
+   whenever scroll-controller.js requests a panel change. This
+   file doesn't decide WHEN to move (that's scroll-controller.js's
+   job) — it only knows HOW to move.
+
+   Reports back with `horizontal:transitionend` when the slide
+   finishes, which is what re-enables input in scroll-controller.js.
 ============================================================ */
 (function () {
   "use strict";
@@ -15,38 +14,45 @@
   const panels = Array.from(document.querySelectorAll(".h-panel"));
   if (!track || !panels.length) return;
 
-  function getMaxTranslate() {
-    return Math.max(0, track.scrollWidth - window.innerWidth);
+  const reduceMotion = window.SITE && window.SITE.reduceMotion;
+  if (reduceMotion) return; // panels stack normally — nothing to slide
+
+  function xFor(index) {
+    return -index * window.innerWidth;
   }
 
-  let maxTranslate = getMaxTranslate();
-  window.addEventListener("resize", () => {
-    maxTranslate = getMaxTranslate();
-  });
+  window.addEventListener("horizontal:panelchange", (e) => {
+    const { index, direction } = e.detail;
 
-  let lastActiveIndex = -1;
-
-  window.addEventListener("horizontal:progress", (e) => {
-    const { progress, activeIndex } = e.detail;
-
-    // 1. horizontal motion — plain transform, GPU-accelerated
-    const x = -progress * maxTranslate;
     if (window.gsap) {
-      gsap.set(track, { x });
+      gsap.to(track, {
+        x: xFor(index),
+        duration: 0.9,
+        ease: "power3.inOut",
+        onComplete: () => window.dispatchEvent(new CustomEvent("horizontal:transitionend")),
+      });
     } else {
-      track.style.transform = `translate3d(${x}px,0,0)`;
+      track.style.transform = `translate3d(${xFor(index)}px,0,0)`;
+      window.dispatchEvent(new CustomEvent("horizontal:transitionend"));
     }
 
-    // 2. panel activation (drives .reveal-item stagger + skill bars)
-    if (activeIndex !== lastActiveIndex) {
-      panels.forEach((p, i) =>
-        p.classList.toggle("is-active", i === activeIndex),
-      );
-      lastActiveIndex = activeIndex;
+    panels.forEach((p, i) => p.classList.toggle("is-active", i === index));
+
+    // land the incoming panel's text at its top (scrolling forward) or
+    // bottom (scrolling backward), so continued scrolling reads naturally
+    const enteringCopy = panels[index].querySelector(".panel-copy");
+    if (enteringCopy) {
+      enteringCopy.scrollTop =
+        direction === "forward" ? 0 : Math.max(0, enteringCopy.scrollHeight - enteringCopy.clientHeight);
     }
   });
 
-  // activate the first panel immediately (progress event won't fire
-  // until the user actually scrolls, so panel 0 needs a manual kick)
-  panels[0].classList.add("is-active");
+  // keep the active panel correctly positioned through resizes/rotation
+  window.addEventListener("resize", () => {
+    const activeEl = document.querySelector(".h-panel.is-active") || panels[0];
+    const index = panels.indexOf(activeEl);
+    const x = xFor(Math.max(0, index));
+    if (window.gsap) gsap.set(track, { x });
+    else track.style.transform = `translate3d(${x}px,0,0)`;
+  });
 })();
