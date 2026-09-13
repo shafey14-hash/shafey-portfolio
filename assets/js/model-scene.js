@@ -19,7 +19,9 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 
-const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const reduceMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)",
+).matches;
 
 // ============================================================
 // 1. REPLACE THE MODEL HERE
@@ -35,8 +37,8 @@ const MODEL_URL = "assets/models/3d_model.optimized.glb";
 // ============================================================
 // 5. CHANGE MODEL SIZE / POSITION HERE
 // ============================================================
-const MODEL_SCALE = 1.0; // multiply to make the model bigger/smaller
-const CAMERA_DISTANCE_FACTOR = 2.4; // higher = camera further away (model looks smaller)
+const MODEL_SCALE = 2.0; // multiply to make the model bigger/smaller
+const CAMERA_DISTANCE_FACTOR = 3.0; // higher = camera further away (model looks smaller)
 
 // ============================================================
 // 4. CHANGE ROTATION VALUES HERE
@@ -94,7 +96,11 @@ function initModelScene() {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
 
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    alpha: true,
+    antialias: true,
+  });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
@@ -127,7 +133,14 @@ function initModelScene() {
     const c = document.createElement("canvas");
     c.width = c.height = size;
     const ctx = c.getContext("2d");
-    const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    const grad = ctx.createRadialGradient(
+      size / 2,
+      size / 2,
+      0,
+      size / 2,
+      size / 2,
+      size / 2,
+    );
     grad.addColorStop(0, "rgba(0,0,0,0.35)");
     grad.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = grad;
@@ -136,7 +149,11 @@ function initModelScene() {
   }
   const shadowPlane = new THREE.Mesh(
     new THREE.PlaneGeometry(2.4, 2.4),
-    new THREE.MeshBasicMaterial({ map: makeShadowTexture(), transparent: true, depthWrite: false })
+    new THREE.MeshBasicMaterial({
+      map: makeShadowTexture(),
+      transparent: true,
+      depthWrite: false,
+    }),
   );
   shadowPlane.rotation.x = -Math.PI / 2;
   scene.add(shadowPlane);
@@ -145,7 +162,9 @@ function initModelScene() {
   // 2. WHERE THE GLB MODEL IS LOADED
   // ============================================================
   const dracoLoader = new DRACOLoader();
-  dracoLoader.setDecoderPath("https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/");
+  dracoLoader.setDecoderPath(
+    "https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/",
+  );
   const loader = new GLTFLoader();
   loader.setDRACOLoader(dracoLoader);
 
@@ -187,14 +206,18 @@ function initModelScene() {
     (err) => {
       console.warn("[model-scene.js] Failed to load 3D model:", err);
       stage.style.display = "none"; // fail gracefully — page still works without it
-    }
+    },
   );
 
   // ============================================================
   // 3. WHERE SCROLL PROGRESS IS CONVERTED INTO ROTATION + POSITION
   // ============================================================
   const currentRot = { x: 0, y: 0, z: 0 };
-  const targetRot = { x: ROTATION_KEYFRAMES[0].x, y: ROTATION_KEYFRAMES[0].y, z: ROTATION_KEYFRAMES[0].z };
+  const targetRot = {
+    x: ROTATION_KEYFRAMES[0].x,
+    y: ROTATION_KEYFRAMES[0].y,
+    z: ROTATION_KEYFRAMES[0].z,
+  };
   const currentPos = { x: POSITION_KEYFRAMES[0].x, y: POSITION_KEYFRAMES[0].y };
   const targetPos = { x: POSITION_KEYFRAMES[0].x, y: POSITION_KEYFRAMES[0].y };
 
@@ -252,10 +275,15 @@ function initModelScene() {
         // idle "alive" layer — a gentle float + breathing scale that
         // never stops, so the model settles into this the instant
         // scrolling pauses (no separate idle/active state needed)
-        const floatOffset = Math.sin(t * FLOAT_SPEED) * FLOAT_AMPLITUDE * modelRadius;
+        const floatOffset =
+          Math.sin(t * FLOAT_SPEED) * FLOAT_AMPLITUDE * modelRadius;
         const breathScale = 1 + Math.sin(t * BREATH_SPEED) * BREATH_AMPLITUDE;
 
-        model.position.set(currentPos.x * modelRadius, currentPos.y * modelRadius + floatOffset, 0);
+        model.position.set(
+          currentPos.x * modelRadius,
+          currentPos.y * modelRadius + floatOffset,
+          0,
+        );
         model.scale.setScalar(MODEL_SCALE * breathScale);
       }
     }
@@ -290,7 +318,7 @@ function initModelScene() {
           else stop();
         });
       },
-      { threshold: 0.01 }
+      { threshold: 0.01 },
     );
     io.observe(pinWrap);
   } else {
