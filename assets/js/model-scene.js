@@ -37,8 +37,8 @@ const MODEL_URL = "assets/models/3d_model.optimized.glb";
 // ============================================================
 // 5. CHANGE MODEL SIZE / POSITION HERE
 // ============================================================
-const MODEL_SCALE = 2.0; // multiply to make the model bigger/smaller
-const CAMERA_DISTANCE_FACTOR = 3.0; // higher = camera further away (model looks smaller)
+const MODEL_SCALE = 1.0; // multiply to make the model bigger/smaller
+const CAMERA_DISTANCE_FACTOR = 2.1; // higher = camera further away (model looks smaller)
 
 // ============================================================
 // 4. CHANGE ROTATION VALUES HERE
