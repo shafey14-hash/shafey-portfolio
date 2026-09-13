@@ -29,7 +29,8 @@
         x: xFor(index),
         duration: 0.9,
         ease: "power3.inOut",
-        onComplete: () => window.dispatchEvent(new CustomEvent("horizontal:transitionend")),
+        onComplete: () =>
+          window.dispatchEvent(new CustomEvent("horizontal:transitionend")),
       });
     } else {
       track.style.transform = `translate3d(${xFor(index)}px,0,0)`;
@@ -43,7 +44,9 @@
     const enteringCopy = panels[index].querySelector(".panel-copy");
     if (enteringCopy) {
       enteringCopy.scrollTop =
-        direction === "forward" ? 0 : Math.max(0, enteringCopy.scrollHeight - enteringCopy.clientHeight);
+        direction === "forward"
+          ? 0
+          : Math.max(0, enteringCopy.scrollHeight - enteringCopy.clientHeight);
     }
   });
 
