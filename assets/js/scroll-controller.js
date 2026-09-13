@@ -4,15 +4,15 @@
 
      - While a panel's text content is taller than the screen,
        incoming scroll (wheel OR touch swipe) scrolls that panel's
-       text vertically first.
+       text vertically first — smoothly, with inertia, not as a
+       raw 1:1 jump (see SCROLL_TWEEN_DURATION below).
      - Only once that panel's content has been fully read (top or
        bottom reached, depending on direction) does scroll switch
        to moving horizontally to the next/previous panel.
      - No native scrollbar is ever shown — panel text is scrolled
        purely via JS (see .panel-copy's `overflow-y:hidden` in
        style.css), driven entirely by mouse wheel / trackpad /
-       touch, exactly like scroll-controller.js's whole job title
-       says: convert scroll input into the right reaction.
+       touch.
 
    This file does NOT move anything on screen itself — it only
    decides what SHOULD happen and asks for it via events:
@@ -20,7 +20,7 @@
        actually performs the horizontal slide + resets the
        incoming panel's scroll position.
      - `horizontal:progress`    → assets/js/model-scene.js reacts
-       by easing the 3D model toward that panel's rotation angle.
+       by easing the 3D model toward that panel's rotation/position.
    horizontal-scroll.js reports back with `horizontal:transitionend`
    once its slide animation finishes, which is what unlocks input
    for the next panel change (prevents skipping multiple panels
@@ -51,12 +51,26 @@
   let transitioning = false; // true while a panel-to-panel slide is animating
   let locked = false; // true while this section fills the viewport and is capturing scroll
 
+  // ---------------- TUNE HERE: internal text-scroll inertia ----------------
+  // scrollTargets tracks where each panel's text SHOULD end up, independent
+  // of the live (mid-tween) DOM scrollTop — this is what avoids the scroll
+  // feeling "stuttery": every wheel tick nudges a target, and a single GSAP
+  // tween eases smoothly toward it (rapid ticks just move the target further,
+  // the tween keeps gliding rather than snapping event-by-event).
+  const scrollTargets = copies.map(() => 0);
+  const SCROLL_TWEEN_DURATION = 0.45; // seconds — higher = floatier/more inertia
+  const SCROLL_TWEEN_EASE = "power2.out";
+
+  function maxScrollFor(copy) {
+    return copy ? Math.max(0, copy.scrollHeight - copy.clientHeight) : 0;
+  }
+
   function dispatchProgress() {
     const progress = panelCount > 1 ? activeIndex / (panelCount - 1) : 0;
     window.dispatchEvent(
       new CustomEvent("horizontal:progress", {
         detail: { progress, continuous: activeIndex, activeIndex, panelCount },
-      }),
+      })
     );
   }
 
@@ -64,15 +78,23 @@
     transitioning = true;
     activeIndex = newIndex;
     window.dispatchEvent(
-      new CustomEvent("horizontal:panelchange", {
-        detail: { index: newIndex, direction, panelCount },
-      }),
+      new CustomEvent("horizontal:panelchange", { detail: { index: newIndex, direction, panelCount } })
     );
     dispatchProgress();
   }
 
   window.addEventListener("horizontal:transitionend", () => {
     transitioning = false;
+  });
+
+  // horizontal-scroll.js resets the incoming panel's scrollTop directly
+  // when a panel change completes — mirror that here so our logical
+  // scrollTargets[] stays in sync with the real DOM value.
+  window.addEventListener("horizontal:panelchange", (e) => {
+    const { index, direction } = e.detail;
+    const copy = copies[index];
+    if (!copy) return;
+    scrollTargets[index] = direction === "forward" ? 0 : maxScrollFor(copy);
   });
 
   // ---------------- TUNE HERE: how "used up" a panel's scroll
@@ -82,31 +104,33 @@
   function shouldCapture(dir) {
     const copy = copies[activeIndex];
     if (!copy) return dir > 0 ? activeIndex < panelCount - 1 : activeIndex > 0;
+    const target = scrollTargets[activeIndex];
     if (dir > 0) {
-      const roomBelow = copy.scrollHeight - copy.clientHeight - copy.scrollTop;
+      const roomBelow = maxScrollFor(copy) - target;
       return roomBelow > SCROLL_EPSILON || activeIndex < panelCount - 1;
     }
-    return copy.scrollTop > SCROLL_EPSILON || activeIndex > 0;
+    return target > SCROLL_EPSILON || activeIndex > 0;
   }
 
   function handleDelta(dir, magnitude) {
     const copy = copies[activeIndex];
     if (copy) {
-      const roomBelow = copy.scrollHeight - copy.clientHeight - copy.scrollTop;
-      if (dir > 0 && roomBelow > SCROLL_EPSILON) {
-        copy.scrollTop += magnitude;
+      const max = maxScrollFor(copy);
+      const target = scrollTargets[activeIndex];
+      if (dir > 0 && max - target > SCROLL_EPSILON) {
+        scrollTargets[activeIndex] = Math.min(max, target + magnitude);
+        gsap.to(copy, { scrollTop: scrollTargets[activeIndex], duration: SCROLL_TWEEN_DURATION, ease: SCROLL_TWEEN_EASE, overwrite: true });
         return;
       }
-      if (dir < 0 && copy.scrollTop > SCROLL_EPSILON) {
-        copy.scrollTop += magnitude; // magnitude is negative when scrolling up
+      if (dir < 0 && target > SCROLL_EPSILON) {
+        scrollTargets[activeIndex] = Math.max(0, target + magnitude); // magnitude is negative when scrolling up
+        gsap.to(copy, { scrollTop: scrollTargets[activeIndex], duration: SCROLL_TWEEN_DURATION, ease: SCROLL_TWEEN_EASE, overwrite: true });
         return;
       }
     }
     // this panel's text is fully read in this direction — move to the next/previous panel
-    if (dir > 0 && activeIndex < panelCount - 1)
-      requestPanel(activeIndex + 1, "forward");
-    else if (dir < 0 && activeIndex > 0)
-      requestPanel(activeIndex - 1, "backward");
+    if (dir > 0 && activeIndex < panelCount - 1) requestPanel(activeIndex + 1, "forward");
+    else if (dir < 0 && activeIndex > 0) requestPanel(activeIndex - 1, "backward");
   }
 
   /* ---------------- Lock state: only capture scroll while this
@@ -117,16 +141,14 @@
     if (value) {
       // snap the section into exact alignment so it doesn't freeze
       // wherever the 65%-visible threshold happened to catch it
-      if (window.__lenis)
-        window.__lenis.scrollTo(pinWrap, { offset: 0, duration: 0.5 });
+      if (window.__lenis) window.__lenis.scrollTo(pinWrap, { offset: 0, duration: 0.5 });
       else pinWrap.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }
 
   const io = new IntersectionObserver(
-    (entries) =>
-      entries.forEach((entry) => setLocked(entry.intersectionRatio > 0.65)),
-    { threshold: [0, 0.65, 1] },
+    (entries) => entries.forEach((entry) => setLocked(entry.intersectionRatio > 0.65)),
+    { threshold: [0, 0.65, 1] }
   );
   io.observe(pinWrap);
 
@@ -156,16 +178,12 @@
       e.stopPropagation();
       handleDelta(dir, e.deltaY);
     },
-    { capture: true, passive: false },
+    { capture: true, passive: false }
   );
 
   /* ---------------- Touch swipe (mobile/tablet) ---------------- */
   let touchLastY = 0;
-  window.addEventListener(
-    "touchstart",
-    (e) => (touchLastY = e.touches[0].clientY),
-    { capture: true, passive: true },
-  );
+  window.addEventListener("touchstart", (e) => (touchLastY = e.touches[0].clientY), { capture: true, passive: true });
   window.addEventListener(
     "touchmove",
     (e) => {
@@ -185,17 +203,14 @@
       e.stopPropagation();
       handleDelta(dir, deltaY * 1.8); // touch deltas are small per-event; scale up to feel natural
     },
-    { capture: true, passive: false },
+    { capture: true, passive: false }
   );
 
   /* ---------------- Jump-to-panel (nav + command palette) ---------------- */
   window.__scrollToPanel = function (idOrIndex) {
     let index = -1;
     if (typeof idOrIndex === "number") index = idOrIndex;
-    else
-      index = panels.findIndex(
-        (p) => p.id === idOrIndex || p.dataset.panel === idOrIndex,
-      );
+    else index = panels.findIndex((p) => p.id === idOrIndex || p.dataset.panel === idOrIndex);
     if (index < 0 || index >= panelCount) return;
 
     if (window.__lenis) window.__lenis.scrollTo(pinWrap, { immediate: false });
