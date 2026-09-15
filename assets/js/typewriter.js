@@ -7,10 +7,10 @@
   if (!el) return;
 
   const ROLES = [
-    "an AI Engineer",
-    "a Full Stack Developer",
-    "a Creative Developer",
-    "an Automation Enthusiast",
+    "AI Engineer",
+    "Full Stack Developer",
+    "Creative Developer",
+    "Automation Enthusiast",
   ];
   const reduceMotion = window.SITE && window.SITE.reduceMotion;
 

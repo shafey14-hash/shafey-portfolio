@@ -13,7 +13,7 @@
   const btn = document.getElementById("music-toggle-btn");
   if (!btn) return;
 
-  const audio = new Audio("assets/audio/Adventure.mp3");
+  const audio = new Audio("Adventure.mp3");
   audio.loop = true;
   audio.volume = 0.9;
 

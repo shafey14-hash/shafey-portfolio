@@ -28,7 +28,6 @@
 ============================================================ */
 (function () {
   "use strict";
-  if (!window.gsap) return;
 
   const reduceMotion = window.SITE && window.SITE.reduceMotion;
   const pinWrap = document.querySelector(".horizontal-pin");
@@ -188,11 +187,13 @@
         e.stopPropagation();
         return;
       }
-      const dir = e.deltaY > 0 ? 1 : -1;
+      const delta =
+        Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      const dir = delta > 0 ? 1 : -1;
       if (!shouldCapture(dir)) return; // let it fall through to Lenis → page scrolls into Hero/Footer
       e.preventDefault();
       e.stopPropagation();
-      handleDelta(dir, e.deltaY);
+      handleDelta(dir, Math.max(1, Math.abs(delta)));
     },
     { capture: true, passive: false },
   );

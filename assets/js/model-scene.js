@@ -32,7 +32,7 @@ const reduceMotion = window.matchMedia(
 // the new .glb in assets/models/ and update this path. If it's a
 // large export, optimize it first, e.g.:
 //   npx @gltf-transform/cli optimize input.glb output.glb --compress draco --texture-compress webp
-const MODEL_URL = "assets/models/3d_model.optimized.glb";
+const MODEL_URL = "3d_model.optimized.glb";
 
 // ============================================================
 // 5. CHANGE MODEL SIZE / POSITION HERE

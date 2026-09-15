@@ -23,9 +23,9 @@
 (function () {
   "use strict";
 
-  const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";
-  const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";
-  const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID";
+  const EMAILJS_PUBLIC_KEY = "Citi743EimF2BLeuI";
+  const EMAILJS_SERVICE_ID = "service_08cfcjd";
+  const EMAILJS_TEMPLATE_ID = "template_0vaspg6";
 
   const IS_CONFIGURED =
     EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY" &&
